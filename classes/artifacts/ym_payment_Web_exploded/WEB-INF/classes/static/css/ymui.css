@@ -1,0 +1,214 @@
+
+
+/** 宽度高度 */
+.width_100{
+	width:100%;
+}
+
+.height_100{
+	height:100%;
+}
+
+/** 颜色值*/
+.color_gold_1{
+	color:#FF9500;
+}
+.color_gold_2{
+	color:#FFB44A;
+}
+
+.color_gold_3{
+	color:#FFD191;
+}
+
+.color_gold_4{
+	color:#FFF1DE;
+}
+
+.color_red{
+	color:#ed4014;
+}
+
+.color_green{
+	color:#19be6b;
+}
+
+.color_yellow{
+	color:#ff9900;
+}
+
+.color_blue{
+	color:#2db7f5;
+}
+
+/** 边距 */
+.padding_10{
+	padding:10px;
+}
+
+.padding_12{
+	padding:12px;
+}
+
+.margin_10{
+	margin:10px;
+}
+
+.margin_12{
+	margin:12px;
+}
+
+.margin_left_10{
+	margin-left:10px;
+}
+
+.margin_right_10{
+    margin-right:10px;
+}
+
+.margin_left_right_10{
+	margin-left:10px;
+	margin-right:10px;
+}
+
+.margin_left_12{
+	margin-left:12px;
+}
+
+.margin_right_12{
+	margin-right:12px;
+}
+
+.margin_left_right_12{
+	margin-left:12px;
+	margin-right:12px;
+}
+
+/** 布局*/
+.div_row{
+	display:flex;
+	flex-direction:row;
+}
+
+.div_column{
+	display: flex;
+	flex-direction: column;
+}
+
+.flex_row{
+	display: flex;             /*设置为flex布局*/
+	justify-content: center;   /*水平居中*/
+	align-items: center;       /*垂直居中*/
+	flex-direction: row;	   /*行布局*/
+}
+
+.flex_column{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.flex_row_left{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-direction: row;
+}
+
+.flex_row_right{
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	flex-direction: row;
+}
+
+.flex_column_left{
+	display: flex;
+	justify-content:flex-start;
+	flex-direction: column;
+}
+
+.flex_row_left_top{
+	display: flex;
+	justify-content: flex-start;
+	align-items: top;
+	flex-direction: row;
+}
+
+.flex_grow_fill{
+	flex-grow: 1;
+}
+
+/** 顶部帮助消息*/
+.ym-tips{
+	background: #F4F6F8;
+	color: #FFFFFF;
+	font-size: 13px;
+	padding: 10px;
+	margin:12px;
+	border-radius: 6px;
+}
+
+.ym-tips .icon{
+	background: url(/images/icon_help.png) left center no-repeat;
+	background-size: 20px 20px;
+	margin-left: 10px;
+	margin-right: 10px;
+	width:30px;
+	height:20px;
+}
+
+.ym-tips .title{
+	font-size: 14px;
+	color: #666666;
+	font-weight: bold;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.ym-tips .message{
+	font-size: 14px;
+	color: #ed4014;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+/** 引用样式*/
+.ym-quote{
+	margin: 0 0 1em 0;
+	padding: 5px 10px;
+	border: 1px dashed #CCC;
+	background: #f7f7f7 url(/common/images/quote.png) right top no-repeat;
+	color: #555;
+	font-size: 14px;
+	line-height: 22px;
+	text-align: left;
+}
+
+.ym-quote a {
+	color: red !important;
+}
+
+/** 分页*/
+.ym-pager{display:flex; justify-content:center;padding:10px 30px;}
+.ym-pager-center{justify-content:center;}
+.ym-pager > div{min-width: 32px;height:32px; text-align:center; border-radius:2px; background:#F6F6F6; line-height:32px; margin:0px 3px;}
+.ym-pager > div > a{display:block;min-width: 32px;height:32px; line-height:32px; text-align:center; font-size:13px;}
+.ym-pager-active{background:#FF9500;color:#FFFFFF !important;}
+.ym-pager-enable{
+	color:#666666 !important;
+	pointer-events:auto;
+	padding:0px 5px;
+}
+.ym-pager-disable{
+	color:#999999 !important;
+	pointer-events:none;
+	padding:0px 5px;
+}
+
+
+
+
+
+

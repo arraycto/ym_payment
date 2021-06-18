@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>支付宝支付</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link type="text/css" th:href="@{/css/ymui.css?c=1}"  rel="stylesheet">
+    <link type="text/css" th:href="@{/css/style.css?a=2}"  rel="stylesheet">
+    <style>
+        template {
+            display: none !important;
+        }
+        [v-cloak] {
+            display: none;
+        }
+
+        .pay_list{
+            width: 100%;
+        }
+
+        .pay_code{
+
+        }
+
+        .pay_amount{
+            color: #000000;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .pay_code .pay_time{
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
+        }
+
+        .pay_code .pay_time .title{
+            color: #FF9500;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .pay_code .pay_time .time{
+            color: #000000;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .order_info{
+            padding: 12px;
+        }
+
+        .order_info .title{
+            color: #000000;
+            font-size: 16px;
+            font-weight: bold;
+            width:90px;
+        }
+
+        .order_info .info{
+            color: #666666;
+            font-size: 16px;
+            padding: 10px;
+        }
+
+        .money{
+            color: #ed4014;
+            font-size: 16px;
+            padding: 10px;
+            font-weight: bold;
+        }
+
+        .card_view{
+            margin: 12px;
+            border-radius: 12px;
+            background: #F4F6F8;
+        }
+
+    </style>
+</head>
+<body>
+    <input type="hidden" id="userId" th:value="${userId}"/>
+    <input type="hidden" id="userName" th:value="${userName}"/>
+    <input type="hidden" id="subject" th:value="${subject}"/>
+    <input type="hidden" id="appId" th:value="${appId}"/>
+    <input type="hidden" id="totalAmount" th:value="${totalAmount}"/>
+
+    <div id="app">
+        <keep-alive :include="cacheComponents">
+            <router-view></router-view>
+        </keep-alive>
+    </div>
+    <template id="pay-template">
+        <div class="container">
+            <mt-header fixed title="收银台" class="mint-header-light">
+                <mt-button icon="back" @click.native="back();" slot="left"></mt-button>
+            </mt-header>
+            <div class="content">
+                <div class="flex_column">
+
+                    <div class="flex_row margin_10">
+                        <img src="../../images/alipay.gif" width="36" height="36"/>
+                        <div class="margin_left_10">支付宝</div>
+                    </div>
+
+                    <mt-radio class="pay_list"
+                            title="请选择要充值的金额"
+                            v-model="totalAmount"
+                            :options="options">
+                    </mt-radio>
+
+                    <div class="pay_amount">
+                        待付款：<span class="money">¥{{totalAmount}}</span>
+                    </div>
+
+                    <div class="button_long margin_12">
+                        <mt-button type="primary" size="large" @click.native="pay">立即付款</mt-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="code-template">
+        <div class="container">
+            <mt-header fixed title="收银台" class="mint-header-light">
+                <mt-button icon="back" @click.native="back();" slot="left"></mt-button>
+            </mt-header>
+            <div class="pay_code content">
+                <div class="flex_column">
+                    <img class="margin_12" src="images/alipay.jpg" width="130" height="38">
+
+                    <div id="qrCode">
+
+                    </div>
+
+                    <div>
+                        <div v-if="codeResult && codeResult.qrCode == null" class="margin_10 money">软件使用时间到期，请联系QQ396196516更新程序</div>
+                        <div v-else class="margin_10" >请用支付宝扫描二维码完成支付</div>
+                    </div>
+
+                    <div class="pay_time">
+                        <div class="title color_green"
+                             v-if="tradeResult && (tradeResult.tradeStatus == 'TRADE_SUCCESS')">支付成功</div>
+                        <div class="title" v-else>等待支付</div>
+                        <div class="flex_row time" v-if="tradeResult && (tradeResult.tradeStatus == 'TRADE_SUCCESS')">
+                            <strong>3秒后关闭...</strong>
+                        </div>
+                        <div class="flex_row time" v-else>
+                            <strong>{{hour}}时</strong>
+                            <strong>{{minute}}分</strong>
+                            <strong>{{second}}秒</strong>
+                        </div>
+                    </div>
+
+                    <div class="order_info card_view" v-if="codeResult">
+                        <div class="flex_row_left">
+                            <div class="title">订单信息</div>
+                            <div class="info">
+                                <p>商品名称：{{codeResult.subject}}</p>
+                                <p>总金额：<span class="money">¥{{codeResult.totalAmount}}</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ym-tips">
+                        <div class="flex_row_left">
+                            <div class="icon"></div>
+                            <div class="title">手机用户可保存上方二维码到手机中,在支付宝扫一扫中选择“相册”即可</div>
+                        </div>
+                    </div>
+
+                    <div class="button_long margin_12" v-if="tradeResult && (tradeResult.tradeStatus == 'WAIT_BUYER_PAY')">
+                        <mt-button type="primary" size="large" @click.native="cancel">取消订单</mt-button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </template>
+
+
+</body>
+
+<script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue-resource_1.3.4.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue-router.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vuex.min.js}"></script>
+
+<link type="text/css" th:href="@{/libs/mint-ui/style.css}"  rel="stylesheet">
+<script type="text/javascript" th:src="@{/libs/mint-ui/index.js}"></script>
+
+<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/qrcode.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/main.js?c=2}"></script>
+</html>

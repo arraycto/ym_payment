@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ym.payment.dao.PayDao">
+
+	<sql id="BaseColumnList">
+		id,user_id,user_name,app_id,subject, out_trade_no, total_amount, trade_status,trade_no,
+		buyer_logon_id, buyer_pay_amount, send_pay_date,create_time,update_time
+	</sql>
+
+	<select id="findAllTrade" resultType="Trade" >
+		select
+		<include refid="BaseColumnList" />
+		from payEntity
+	</select>
+
+	<select id="findTradeById" resultType="Trade" parameterType="java.lang.String">
+		select
+		<include refid="BaseColumnList" />
+		from payEntity
+		where out_trade_no = #{out_trade_no}
+	</select>
+
+	<select id="findTradeWaitPay" resultType="Trade">
+		select
+		<include refid="BaseColumnList" />
+		from payEntity
+		where trade_status = 'WAIT_BUYER_PAY' and create_time > DATE_ADD(NOW(), INTERVAL -10 MINUTE)
+	</select>
+
+	<insert id="saveTrade" parameterType="Trade">
+
+		<selectKey keyProperty="count" resultType="int" order="BEFORE">
+			select count(*) as count from payEntity WHERE out_trade_no = #{outTradeNo}
+		</selectKey>
+
+		<if test="count>0">
+			update
+			payEntity
+			set
+			subject = #{subject},
+			total_amount = #{totalAmount},
+			trade_status = #{tradeStatus},
+			trade_no = #{tradeNo},
+
+			buyer_logon_id = #{buyerLogonId},
+			buyer_pay_amount = #{buyerPayAmount},
+			send_pay_date = #{sendPayDate},
+			update_time = now()
+			where
+			out_trade_no = #{outTradeNo}
+		</if>
+
+		<if test="count==0">
+			insert into
+			payEntity(user_id,user_name,app_id,subject,out_trade_no, total_amount, trade_status,trade_no,
+			buyer_logon_id, buyer_pay_amount,send_pay_date,body,create_time,update_time)
+			values
+			(#{userId},#{userName},#{appId},#{subject},#{outTradeNo},#{totalAmount},#{tradeStatus},#{tradeNo},
+			#{buyerLogonId},#{buyerPayAmount},#{sendPayDate},#{body},now(),now())
+		</if>
+
+	</insert>
+
+	<update id="updateTrade" parameterType="Trade">
+		update
+			payEntity
+		set
+			subject = #{subject},
+			total_amount = #{totalAmount},
+			trade_status = #{tradeStatus},
+			trade_no = #{tradeNo},
+
+			buyer_logon_id = #{buyerLogonId},
+			buyer_pay_amount = #{buyerPayAmount},
+			send_pay_date = #{sendPayDate},
+			update_time = now()
+		where
+			out_trade_no = #{outTradeNo}
+	</update>
+
+	<update id="cancelTrade" parameterType="java.lang.String">
+		update
+			payEntity
+		set
+			trade_status = "CANCEL_BUYER_PAY",
+			update_time = now()
+		where
+			out_trade_no = #{outTradeNo}
+	</update>
+
+	<delete id="deleteTrade" parameterType="java.lang.String">
+		delete from
+			payEntity
+		where
+			out_trade_no = #{outTradeNo}
+	</delete>
+</mapper>
