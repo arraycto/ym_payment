@@ -17,3 +17,10 @@ http://127.0.0.1:8090/pay?appId=1
 演示查看流水
 http://127.0.0.1:8090/pay/log
 
+
+### Screenshot
+
+![图片说明](https://ymbok.com/static/ym_payment/screenshot/1.png "1.png")
+![图片说明](https://ymbok.com/static/ym_payment/screenshot/2.png "2.png")
+![图片说明](https://ymbok.com/static/ym_payment/screenshot/3.png "3.png")
+
